@@ -32,7 +32,7 @@ if st.button("🎙️ Generate Podcast", disabled=not all([google_api_key, eleve
                 # Set API keys
                 os.environ["GOOGLE_API_KEY"] = google_api_key
                 os.environ["FIRECRAWL_API_KEY"] = firecrawl_key
-                print("gaand fatt gyi 0")
+                st.write("gaand fatt gyi 0")
                 # Create agent for scraping and summarization
                 agent = Agent(
                     name="Blog Summarizer",
@@ -43,7 +43,7 @@ if st.button("🎙️ Generate Podcast", disabled=not all([google_api_key, eleve
                         "The summary should be conversational and capture the main points."
                     ],
                 )
-                print("gaand fatt gyi 1")
+                st.write("gaand fatt gyi 1")
                 # Get summary
                 response: RunOutput = agent.run(f"Scrape and summarize this blog for a podcast: {url}")
                 summary = response.content if hasattr(response, 'content') else str(response)
