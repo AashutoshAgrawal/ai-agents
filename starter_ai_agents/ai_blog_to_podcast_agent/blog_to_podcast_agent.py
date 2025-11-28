@@ -28,8 +28,8 @@ if st.button("🎙️ Generate Podcast", disabled=not all([google_api_key, firec
         with st.spinner("Scraping blog and generating podcast..."):
             try:
                 # Set API keys
-                google_api_key = os.environ["GOOGLE_API_KEY"]
-                firecrawl_key = os.environ["FIRECRAWL_API_KEY"]
+                google_api_key = os.environ.get("GOOGLE_API_KEY")
+                firecrawl_key = os.environ.get("FIRECRAWL_API_KEY")
 
                 # Create agent for scraping and summarization
                 agent = Agent(
