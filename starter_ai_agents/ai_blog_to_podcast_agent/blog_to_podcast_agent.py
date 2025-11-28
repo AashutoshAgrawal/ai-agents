@@ -1,10 +1,10 @@
 import os
-from uuid import uuid4
+import io
 from agno.agent import Agent
 from agno.run.agent import RunOutput
 from agno.models.google import Gemini
 from agno.tools.firecrawl import FirecrawlTools
-from elevenlabs import ElevenLabs
+from gtts import gTTS
 import streamlit as st
 
 
@@ -14,16 +14,14 @@ st.title("📰 ➡️ 🎙️ Blog to Podcast Agent")
 
 # API Keys (Runtime Input)
 st.sidebar.header("🔑 API Keys")
-# openai_key = st.sidebar.text_input("OpenAI API Key", type="password")
 google_api_key = st.sidebar.text_input("Google API Key", type="password")
-elevenlabs_key = st.sidebar.text_input("ElevenLabs API Key", type="password")
 firecrawl_key = st.sidebar.text_input("Firecrawl API Key", type="password")
 
 # Blog URL Input
 url = st.text_input("Enter Blog URL:", "")
 
 # Generate Button
-if st.button("🎙️ Generate Podcast", disabled=not all([google_api_key, elevenlabs_key, firecrawl_key])):
+if st.button("🎙️ Generate Podcast", disabled=not all([google_api_key, firecrawl_key])):
     if not url.strip():
         st.warning("Please enter a blog URL")
     else:
@@ -32,7 +30,7 @@ if st.button("🎙️ Generate Podcast", disabled=not all([google_api_key, eleve
                 # Set API keys
                 os.environ["GOOGLE_API_KEY"] = google_api_key
                 os.environ["FIRECRAWL_API_KEY"] = firecrawl_key
-                st.write("gaand fatt gyi 0")
+
                 # Create agent for scraping and summarization
                 agent = Agent(
                     name="Blog Summarizer",
@@ -43,35 +41,23 @@ if st.button("🎙️ Generate Podcast", disabled=not all([google_api_key, eleve
                         "The summary should be conversational and capture the main points."
                     ],
                 )
-                st.write("gaand fatt gyi 1")
+
                 # Get summary
                 response: RunOutput = agent.run(f"Scrape and summarize this blog for a podcast: {url}")
                 summary = response.content if hasattr(response, 'content') else str(response)
-                st.write("gaand fatt gyi 2")
+
                 if summary:
-                    # Initialize ElevenLabs client and generate audio
-                    client = ElevenLabs(api_key=elevenlabs_key)
-                    st.write("gaand fatt gyi 3")
-                    # Generate audio using text_to_speech.convert
-                    audio_generator = client.text_to_speech.convert(
-                        text=summary,
-                        voice_id="JBFqnCBsd6RMkjVDRZzb",
-                        model_id="eleven_multilingual_v2"
-                    )
-                    st.write("gaand fatt gyi 4")
-                    # Collect audio chunks if it's a generator
-                    audio_chunks = []
-                    for chunk in audio_generator:
-                        if chunk:
-                            audio_chunks.append(chunk)
-                    audio_bytes = b"".join(audio_chunks)
-                    
+                    # Generate audio using gTTS (free, no API key needed)
+                    tts = gTTS(text=summary, lang='en')
+                    audio_buffer = io.BytesIO()
+                    tts.write_to_fp(audio_buffer)
+                    audio_buffer.seek(0)
+                    audio_bytes = audio_buffer.getvalue()
+
                     # Display audio
-                    st.write("gaand fatt gyi 5")
                     st.success("Podcast generated! 🎧")
-                    st.write("gaand fatt gyi 6")
                     st.audio(audio_bytes, format="audio/mp3")
-                    st.write("gaand fatt gyi 7")
+
                     # Download button
                     st.download_button(
                         "Download Podcast",
@@ -79,12 +65,12 @@ if st.button("🎙️ Generate Podcast", disabled=not all([google_api_key, eleve
                         "podcast.mp3",
                         "audio/mp3"
                     )
-                    st.write("gaand fatt gyi 8")
+
                     # Show summary
                     with st.expander("📄 Podcast Summary"):
                         st.write(summary)
                 else:
                     st.error("Failed to generate summary")
-                st.write("gaand fatt gyi 9")
+
             except Exception as e:
                 st.error(f"Error: {e}")
