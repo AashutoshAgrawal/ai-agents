@@ -13,9 +13,9 @@ st.set_page_config(page_title="📰 ➡️ 🎙️ Blog to Podcast", page_icon="
 st.title("📰 ➡️ 🎙️ Blog to Podcast Agent")
 
 # API Keys (Runtime Input)
-st.sidebar.header("🔑 API Keys")
-google_api_key = st.sidebar.text_input("Google API Key", type="password")
-firecrawl_key = st.sidebar.text_input("Firecrawl API Key", type="password")
+# st.sidebar.header("🔑 API Keys")
+# google_api_key = st.sidebar.text_input("Google API Key", type="password")
+# firecrawl_key = st.sidebar.text_input("Firecrawl API Key", type="password")
 
 # Blog URL Input
 url = st.text_input("Enter Blog URL:", "")
@@ -28,8 +28,8 @@ if st.button("🎙️ Generate Podcast", disabled=not all([google_api_key, firec
         with st.spinner("Scraping blog and generating podcast..."):
             try:
                 # Set API keys
-                os.environ["GOOGLE_API_KEY"] = google_api_key
-                os.environ["FIRECRAWL_API_KEY"] = firecrawl_key
+                google_api_key = os.environ["GOOGLE_API_KEY"]
+                firecrawl_key = os.environ["FIRECRAWL_API_KEY"]
 
                 # Create agent for scraping and summarization
                 agent = Agent(
