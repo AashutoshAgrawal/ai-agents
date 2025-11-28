@@ -67,9 +67,11 @@ if st.button("🎙️ Generate Podcast", disabled=not all([google_api_key, eleve
                     audio_bytes = b"".join(audio_chunks)
                     
                     # Display audio
+                    st.write("gaand fatt gyi 5")
                     st.success("Podcast generated! 🎧")
+                    st.write("gaand fatt gyi 6")
                     st.audio(audio_bytes, format="audio/mp3")
-                    
+                    st.write("gaand fatt gyi 7")
                     # Download button
                     st.download_button(
                         "Download Podcast",
@@ -77,12 +79,12 @@ if st.button("🎙️ Generate Podcast", disabled=not all([google_api_key, eleve
                         "podcast.mp3",
                         "audio/mp3"
                     )
-                    
+                    st.write("gaand fatt gyi 8")
                     # Show summary
                     with st.expander("📄 Podcast Summary"):
                         st.write(summary)
                 else:
                     st.error("Failed to generate summary")
-                    
+                st.write("gaand fatt gyi 9")
             except Exception as e:
                 st.error(f"Error: {e}")
